@@ -1,26 +1,147 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Bold, saturated palette — flat graphic / screen-print inspired */
+  --color-cream: #FFFEF5;
+  --color-cobalt: #2B4EFF;
+  --color-cobalt-dark: #1E3BCC;
+  --color-hot-pink: #FF3BA0;
+  --color-hot-pink-dark: #CC2980;
+  --color-golden: #FFE600;
+  --color-golden-dark: #CCBA00;
+  --color-lime: #00C97A;
+  --color-lime-dark: #009E60;
+  --color-navy: #1A1344;
+  --color-coral: #FF4530;
+
+  /* Legacy compat */
+  --color-amber-warm: #d97706;
+  --color-amber-light: #fef3c7;
+  --color-forest: #166534;
+  --color-forest-light: #dcfce7;
+  --color-bark: #78350f;
+  --color-bark-light: #fef9c3;
+
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* Animation shorthands */
+  --animate-slide-up: slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-slide-up-fast: slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-fade-in: fade-in 0.35s ease-out both;
+  --animate-bounce-in: bounce-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  --animate-float: float 3s ease-in-out infinite;
+  --animate-pop: pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes bounce-in {
+  0%   { opacity: 0; transform: scale(0.2) rotate(-12deg); }
+  55%  { opacity: 1; transform: scale(1.18) rotate(4deg); }
+  80%  { transform: scale(0.92) rotate(-2deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-bounce-in,
+  .animate-slide-up,
+  .animate-fade-in,
+  .animate-pop {
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
 }
 
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+
+@keyframes pop {
+  0%   { opacity: 0; transform: scale(0.88) translateY(6px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes dot-bounce {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.5; }
+  40%           { transform: translateY(-8px); opacity: 1; }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-cream);
+  color: var(--color-navy);
+  font-family: var(--font-sans);
+  min-height: 100svh;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.hero-title {
+  font-family: "SF Compact Display", sans-serif;
+  font-size: 48px;
+}
+
+/* Leaflet z-index fix */
+.leaflet-container {
+  z-index: 1;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-cobalt);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Shimmer skeleton */
+.shimmer {
+  background: linear-gradient(90deg, #ebebeb 25%, #d4d4d4 50%, #ebebeb 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* Loading dots */
+.dot-bounce {
+  animation: dot-bounce 1.2s ease-in-out infinite;
+  animation-delay: calc(var(--dot-i, 0) * 0.15s);
+}
+
+/* Scrollbar hide */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Mobile safe area (notch, home indicator) */
+.safe-area-padding {
+  padding-left: env(safe-area-inset-left, 0);
+  padding-right: env(safe-area-inset-right, 0);
+  padding-bottom: env(safe-area-inset-bottom, 0);
 }

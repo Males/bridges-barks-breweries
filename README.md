@@ -1,36 +1,100 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bridges, Barks & Breweries 🌉🐾🍻
 
-## Getting Started
+Find a dog walk near you that crosses bridges and ends at a brewery or pub with a taproom.
 
-First, run the development server:
+## What it does
+
+1. **Enter a location** — typeahead autocomplete powered by Photon (OSM data)
+2. **Get a walk** — the app finds bridges and breweries/pubs near you via OpenStreetMap, routes through them with OSRM, and shows you a walk card with a live map
+3. **Refine it** — too long? too far? don't like the brewery? Hit an action button to reroll
+4. **Go walk** — open full details with turn-by-turn directions and deep links to Google Maps or Apple Maps
+
+## Tech stack
+
+| Layer | Choice |
+|---|---|
+| Framework | Next.js 16 App Router + TypeScript |
+| Styling | Tailwind CSS v4 |
+| Map | react-leaflet + Leaflet (OSM tiles) |
+| State | Zustand (session-only, no persistence) |
+| Geocoding | [Photon by Komoot](https://photon.komoot.io) |
+| POI data | [Overpass API](https://overpass-api.de) (with mirror fallback) |
+| Routing | [OSRM](https://project-osrm.org) public foot endpoint |
+
+**No database. No login. No tracking. No API keys required.**
+
+## Running locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Building
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+## Deploying to Vercel
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+vercel --prod
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+No environment variables needed — all data sources are free and public.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Architecture
 
-## Deploy on Vercel
+### API routes (serverless, Next.js)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Route | Purpose |
+|---|---|
+| `GET /api/geocode?q=Reading` | Proxies Photon geocoding; returns `Location[]` |
+| `POST /api/overpass` | Proxies Overpass API with 5-min in-memory cache and mirror fallback |
+| `GET /api/osrm?waypoints=lon,lat;lon,lat` | Proxies OSRM foot routing |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Walk generation algorithm
+
+1. Geocode location → lat/lon
+2. Pick random start point 0.5–1.5 km from location
+3. Parallel Overpass queries for bridges + venues
+4. Score venues: taproom > brewery > pub/bar; prefer venues that can sit at end of route
+5. Select 1–2 bridges between start and venue
+6. Route via OSRM (foot profile); fallback to arc polyline if unavailable
+7. Score and assemble final `Walk` object
+
+### Taproom detection
+
+A venue is flagged as a taproom if any of:
+- OSM tag `craft=brewery`
+- OSM tag `microbrewery=yes`
+- Name contains: `taproom`, `brewing`, `microbrewery`, `brew co`, `brewery`, `brewhouse`
+
+### Action buttons
+
+| Button | Effect |
+|---|---|
+| I want this walk | Opens full detail view |
+| Too long | Retargets 3 km, regenerates |
+| Too short | Retargets 8 km, regenerates |
+| Too far away | Reduces start offset radius, regenerates |
+| Different brewery | Excludes current venue, regenerates |
+| Different bridge | Excludes current bridges, regenerates |
+| Try again | Full reset, regenerates |
+
+## Known limitations
+
+- Overpass API can be slow (5–15 s) at peak times — mirrors are tried in order
+- Rural areas with few bridges or pubs may return no results ("No bridges found near…")
+- OSRM public endpoint may occasionally be unavailable; the app falls back to a simple arc polyline
+- Walk distance is a soft target — real-world geography determines the actual route
+
+## Data attribution
+
+Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors, ODbL.
+Routing by [OSRM](https://project-osrm.org).
+Geocoding by [Photon](https://photon.komoot.io) (Komoot).

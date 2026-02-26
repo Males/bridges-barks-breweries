@@ -1,65 +1,114 @@
-import Image from "next/image";
+import LocationInput from '@/components/landing/LocationInput'
+import { BridgeIcon, DogBoneIcon, BeerIcon } from '@/components/ui'
 
-export default function Home() {
+export default function LandingPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <main
+      id="main-content"
+      className="min-h-svh flex flex-col items-center justify-center px-4 py-8 sm:px-5 sm:py-12 overflow-hidden safe-area-padding"
+    >
+      {/* Hero */}
+      <div className="text-center mb-8 sm:mb-10 max-w-sm w-full">
+        {/* Illustration row — bold flat style */}
+        <div
+          className="flex items-center justify-center gap-4 sm:gap-5 mb-5 sm:mb-6"
+          aria-hidden="true"
+        >
+          <span
+            className="inline-block animate-bounce-in text-cobalt"
+            style={{ animationDelay: '0ms' } as React.CSSProperties}
+          >
+            <BridgeIcon size={56} fill="#2B4EFF" stroke="#1A1344" />
+          </span>
+          <span
+            className="inline-block animate-bounce-in text-hot-pink"
+            style={{ animationDelay: '120ms' } as React.CSSProperties}
+          >
+            <DogBoneIcon size={56} fill="#FF3BA0" stroke="#1A1344" />
+          </span>
+          <span
+            className="inline-block animate-bounce-in text-golden"
+            style={{ animationDelay: '240ms' } as React.CSSProperties}
+          >
+            <BeerIcon size={56} fill="#FFE600" stroke="#1A1344" />
+          </span>
+        </div>
+
+        {/* Title block with coloured underline accent */}
+        <div className="animate-slide-up" style={{ animationDelay: '100ms' } as React.CSSProperties}>
+          <h1 className="hero-title font-display text-navy font-bold leading-tight mb-1">
+            Bridges, Barks
+            <br />
+            <span className="relative inline-block">
+              &amp; Breweries
+              <span
+                className="absolute -bottom-1 left-0 right-0 h-3 bg-golden -z-10 rounded"
+                aria-hidden="true"
+              />
+            </span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+        </div>
+
+        <p
+          className="text-navy/70 text-base leading-relaxed mt-3 sm:mt-4 animate-fade-in max-w-[20rem] mx-auto"
+          style={{ animationDelay: '250ms' } as React.CSSProperties}
+        >
+          Loop walks with bridges &amp; a brewery stop for you and the dog.
+        </p>
+      </div>
+
+      {/* Search input — relative z-10 so dropdown appears above feature blocks */}
+      <div
+        className="w-full max-w-md animate-slide-up relative z-10"
+        style={{ animationDelay: '200ms' } as React.CSSProperties}
+      >
+        <p
+          className="text-sm font-bold text-navy mb-2 text-center uppercase tracking-wide"
+        >
+          Pick your starting spot
+        </p>
+        <LocationInput />
+      </div>
+
+      {/* Reassurance */}
+      <p
+        className="mt-4 sm:mt-5 text-xs text-navy/50 text-center animate-fade-in"
+        style={{ animationDelay: '400ms' } as React.CSSProperties}
+      >
+        No account needed · No data stored · Powered by OpenStreetMap
+      </p>
+
+      {/* Feature cards — bold coloured blocks, not buttons (no shadow) */}
+      <div
+        className="mt-8 sm:mt-10 grid grid-cols-3 gap-2 sm:gap-3 max-w-sm w-full animate-slide-up relative z-0"
+        style={{ animationDelay: '300ms' } as React.CSSProperties}
+        role="list"
+        aria-label="What you get: bridges, dog-friendly routes, brewery stop"
+      >
+        <div
+          className="flex flex-col items-center gap-1.5 sm:gap-2 bg-cobalt border-2 border-navy rounded-xl p-3 min-h-[5.5rem]"
+          role="listitem"
+        >
+          <BridgeIcon size={36} fill="#FFFEF5" stroke="#1A1344" />
+          <p className="text-xs font-bold text-white text-center leading-tight">
+            Crosses bridges
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div
+          className="flex flex-col items-center gap-1.5 sm:gap-2 bg-hot-pink border-2 border-navy rounded-xl p-3 min-h-[5.5rem]"
+          role="listitem"
+        >
+          <DogBoneIcon size={36} fill="#FFFEF5" stroke="#1A1344" />
+          <p className="text-xs font-bold text-white text-center leading-tight">Dog friendly</p>
         </div>
-      </main>
-    </div>
-  );
+        <div
+          className="flex flex-col items-center gap-1.5 sm:gap-2 bg-golden border-2 border-navy rounded-xl p-3 min-h-[5.5rem]"
+          role="listitem"
+        >
+          <BeerIcon size={36} fill="#1A1344" stroke="#1A1344" />
+          <p className="text-xs font-bold text-navy text-center leading-tight">Brewery stop</p>
+        </div>
+      </div>
+    </main>
+  )
 }
