@@ -102,7 +102,7 @@ body {
 }
 
 .hero-title {
-  font-family: "SF Compact Display", sans-serif;
+  font-family: "Playfair Display", serif;
   font-size: 48px;
 }
 
@@ -115,6 +115,12 @@ body {
   outline: 3px solid var(--color-cobalt);
   outline-offset: 2px;
   border-radius: 4px;
+}
+
+/* Location combobox: outline on container only, never on the inner input */
+.location-input-combobox input:focus-visible {
+  outline: none !important;
+  outline-offset: 0;
 }
 
 /* Shimmer skeleton */

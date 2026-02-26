@@ -1,6 +1,6 @@
 /**
- * Bold flat bridge illustration — thick outline, solid fill.
- * Clear arch bridge: two piers, arch, deck. Accessible: decorative only.
+ * Bridge illustration — outline style.
+ * Accessible: decorative only.
  */
 interface Props {
   className?: string
@@ -19,57 +19,15 @@ export default function BridgeIcon({
     <svg
       width={size}
       height={size}
-      viewBox="0 0 48 48"
+      viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
       aria-hidden
     >
-      {/* Water / base */}
       <path
-        d="M4 38h40v4H4z"
+        d="M22.92 15.36H19.56V9.20071C20.3675 10.1969 21.4154 10.9709 22.605 11.4498C23.2084 11.6823 23.8372 11.1744 23.7368 10.5356C23.6918 10.249 23.5021 10.0059 23.235 9.89266C21.009 8.9991 19.5529 6.83861 19.56 4.44001C19.56 3.79338 18.86 3.38923 18.3 3.71255C18.0401 3.8626 17.88 4.13991 17.88 4.44001C17.88 8.96644 12.98 11.7955 9.06 9.53224C7.24073 8.48188 6.12 6.54073 6.12 4.44001C6.12 3.79338 5.42 3.38923 4.86 3.71255C4.60011 3.8626 4.44 4.13991 4.44 4.44001C4.4471 6.83861 2.99096 8.9991 0.765 9.89266C0.169697 10.1451 0.0709411 10.9474 0.58725 11.3367C0.818897 11.5114 1.12428 11.5541 1.395 11.4498C2.58457 10.9709 3.63251 10.1969 4.44 9.20071V15.36H1.08C0.433369 15.36 0.0292223 16.06 0.352538 16.62C0.502594 16.8799 0.779897 17.04 1.08 17.04H4.44V19.56C4.44 20.2066 5.14 20.6108 5.7 20.2875C5.95989 20.1374 6.12 19.8601 6.12 19.56V17.04H17.88V19.56C17.88 20.2066 18.58 20.6108 19.14 20.2875C19.3999 20.1374 19.56 19.8601 19.56 19.56V17.04H22.92C23.5666 17.04 23.9708 16.34 23.6475 15.78C23.4974 15.5201 23.2201 15.36 22.92 15.36ZM13.68 11.811V15.36H10.32V11.811C11.4258 12.063 12.5742 12.063 13.68 11.811ZM6.12 9.18601C6.80543 10.0331 7.66481 10.7231 8.64 11.2094V15.36H6.12V9.18601ZM15.36 15.36V11.2104C16.3352 10.7242 17.1946 10.0342 17.88 9.18706V15.36H15.36Z"
         fill={fill}
-        stroke={stroke}
-        strokeWidth="2"
-        strokeLinejoin="round"
-      />
-      {/* Left pier */}
-      <path
-        d="M10 38V22h4v16h-4z"
-        fill={fill}
-        stroke={stroke}
-        strokeWidth="2.5"
-        strokeLinejoin="round"
-      />
-      {/* Right pier */}
-      <path
-        d="M34 38V22h4v16h-4z"
-        fill={fill}
-        stroke={stroke}
-        strokeWidth="2.5"
-        strokeLinejoin="round"
-      />
-      {/* Arch (clear bridge arch over the gap) */}
-      <path
-        d="M14 22c0-5 4.5-10 10-10s10 5 10 10"
-        fill="none"
-        stroke={stroke}
-        strokeWidth="2.5"
-        strokeLinecap="round"
-      />
-      {/* Deck (walking surface across) */}
-      <path
-        d="M14 24h20"
-        stroke={stroke}
-        strokeWidth="2.5"
-        strokeLinecap="round"
-      />
-      {/* Railings / parapet hint */}
-      <path
-        d="M14 20v4M24 16v12M34 20v4"
-        stroke={stroke}
-        strokeWidth="2"
-        strokeLinecap="round"
       />
     </svg>
   )

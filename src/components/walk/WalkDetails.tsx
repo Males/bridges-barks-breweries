@@ -54,7 +54,7 @@ export default function WalkDetails({ walk }: Props) {
       aria-label="Walk details"
     >
       {/* Cobalt header */}
-      <header className="sticky top-0 z-10 bg-cobalt border-b-2 border-navy px-5 sm:px-6 py-3 flex items-center gap-3 safe-area-padding">
+      <header className="sticky top-0 z-10 bg-cobalt border-b-2 border-navy py-3 px-3 pb-3 flex items-center gap-3 safe-area-padding sm:px-6">
         <button
           onClick={() => setView('card')}
           aria-label="Back to walk card"
@@ -66,10 +66,10 @@ export default function WalkDetails({ walk }: Props) {
           <h1 className="font-display text-lg text-white font-bold leading-tight truncate">
             {walk.venue.name}
           </h1>
-          <p className="text-white/70 text-xs flex items-center gap-1 flex-wrap">
+          <p className="text-white text-xs flex items-center gap-1 flex-wrap">
             {metersToKm(walk.distanceMeters)} · {formatDuration(walk.durationMinutes)} ·{' '}
             {walk.bridges.length} {walk.bridges.length === 1 ? 'bridge' : 'bridges'} ·{' '}
-            <span className="inline-flex items-center gap-0.5">
+            <span className="inline-flex items-center gap-0.5 text-white/75">
               <LoopIcon size={12} stroke="#fff" />
               Loop
             </span>

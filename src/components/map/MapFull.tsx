@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react'
 import { MapContainer, TileLayer, Polyline, Marker, Popup, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import type { Bridge, Venue } from '@/types'
+import { getMarkerHtml } from '@/lib/mapMarkerIcons'
 import 'leaflet/dist/leaflet.css'
 
 interface Props {
@@ -13,33 +14,15 @@ interface Props {
   startPoint: { lat: number; lon: number }
 }
 
-/** Labeled marker (no emoji) — bold flat style */
-function createLabelIcon(
-  label: string,
-  bgColor: string,
-  borderColor = '#1A1344'
-): L.DivIcon {
+const MARKER_SIZE = 32
+
+function createMapIcon(type: 'start' | 'bridge' | 'venue'): L.DivIcon {
   return L.divIcon({
-    html: `<div style="
-      background:${bgColor};
-      color:${borderColor};
-      border:2px solid ${borderColor};
-      border-radius:50%;
-      width:32px;
-      height:32px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:10px;
-      font-weight:bold;
-      text-transform:uppercase;
-      line-height:1;
-      box-shadow:0 2px 4px rgba(0,0,0,0.2);
-    ">${label.charAt(0)}</div>`,
+    html: getMarkerHtml(type, MARKER_SIZE),
     className: '',
-    iconSize: [32, 32],
-    iconAnchor: [16, 32],
-    popupAnchor: [0, -32],
+    iconSize: [MARKER_SIZE, MARKER_SIZE],
+    iconAnchor: [MARKER_SIZE / 2, MARKER_SIZE],
+    popupAnchor: [0, -MARKER_SIZE],
   })
 }
 
@@ -62,9 +45,9 @@ export default function MapFull({ route, bridges, venue, startPoint }: Props) {
 
   const center: [number, number] = route[Math.floor(route.length / 2)]
 
-  const startEndIcon = createLabelIcon('S', '#166534', '#1A1344')
-  const venueIcon = createLabelIcon('B', '#d97706', '#1A1344')
-  const bridgeIcon = createLabelIcon('Br', '#78350f', '#1A1344')
+  const startEndIcon = createMapIcon('start')
+  const venueIcon = createMapIcon('venue')
+  const bridgeIcon = createMapIcon('bridge')
 
   return (
     <MapContainer

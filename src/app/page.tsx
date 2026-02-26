@@ -5,7 +5,7 @@ export default function LandingPage() {
   return (
     <main
       id="main-content"
-      className="min-h-svh flex flex-col items-center justify-center px-4 py-8 sm:px-5 sm:py-12 overflow-hidden safe-area-padding"
+      className="min-h-svh flex flex-col items-center justify-center px-4 py-8 sm:px-5 sm:py-12 overflow-hidden safe-area-padding mx-6"
     >
       {/* Hero */}
       <div className="text-center mb-8 sm:mb-10 max-w-sm w-full">

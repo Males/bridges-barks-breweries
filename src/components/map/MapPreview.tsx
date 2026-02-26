@@ -1,8 +1,10 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { MapContainer, TileLayer, Polyline, CircleMarker, useMap } from 'react-leaflet'
+import { MapContainer, TileLayer, Polyline, Marker, useMap } from 'react-leaflet'
+import L from 'leaflet'
 import type { Bridge, Venue } from '@/types'
+import { getMarkerHtml } from '@/lib/mapMarkerIcons'
 import 'leaflet/dist/leaflet.css'
 
 interface Props {
@@ -24,6 +26,17 @@ function BoundsUpdater({ route }: { route: [number, number][] }) {
   }, [map, route])
 
   return null
+}
+
+const PREVIEW_MARKER_SIZE = 24
+
+function createPreviewIcon(type: 'start' | 'bridge' | 'venue'): L.DivIcon {
+  return L.divIcon({
+    html: getMarkerHtml(type, PREVIEW_MARKER_SIZE),
+    className: '',
+    iconSize: [PREVIEW_MARKER_SIZE, PREVIEW_MARKER_SIZE],
+    iconAnchor: [PREVIEW_MARKER_SIZE / 2, PREVIEW_MARKER_SIZE],
+  })
 }
 
 export default function MapPreview({ route, bridges, venue, startPoint }: Props) {
@@ -56,36 +69,24 @@ export default function MapPreview({ route, bridges, venue, startPoint }: Props)
       <Polyline positions={route} color="#d97706" weight={3} opacity={0.9} />
 
       {/* Start & end marker (loop — same point) */}
-      <CircleMarker
-        center={[startPoint.lat, startPoint.lon]}
-        radius={8}
-        fillColor="#166534"
-        color="#1A1344"
-        weight={2}
-        fillOpacity={1}
+      <Marker
+        position={[startPoint.lat, startPoint.lon]}
+        icon={createPreviewIcon('start')}
       />
 
       {/* Bridge markers */}
       {bridges.map((b) => (
-        <CircleMarker
+        <Marker
           key={b.id}
-          center={[b.lat, b.lon]}
-          radius={5}
-          fillColor="#78350f"
-          color="white"
-          weight={2}
-          fillOpacity={1}
+          position={[b.lat, b.lon]}
+          icon={createPreviewIcon('bridge')}
         />
       ))}
 
       {/* Venue marker */}
-      <CircleMarker
-        center={[venue.lat, venue.lon]}
-        radius={8}
-        fillColor="#d97706"
-        color="white"
-        weight={2}
-        fillOpacity={1}
+      <Marker
+        position={[venue.lat, venue.lon]}
+        icon={createPreviewIcon('venue')}
       />
     </MapContainer>
   )

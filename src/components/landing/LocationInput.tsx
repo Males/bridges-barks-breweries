@@ -127,9 +127,9 @@ export default function LocationInput() {
     <div ref={containerRef} className={`w-full ${isOpen ? 'relative z-[100]' : ''}`}>
       <form onSubmit={handleSubmit} noValidate>
         <div className="relative">
-          {/* Input — no focus ring inside, border stays navy */}
+          {/* Input — focus ring on container, not on input */}
           <div
-            className="flex items-center gap-3 bg-white rounded-xl border-2 border-navy px-4 py-3.5 transition-colors shadow-[3px_3px_0px_#1A1344]"
+            className="location-input-combobox flex items-center gap-3 bg-white rounded-xl border-2 border-navy px-4 py-3.5 transition-colors shadow-[3px_3px_0px_#1A1344] focus-within:outline focus-within:outline-2 focus-within:outline-cobalt focus-within:outline-offset-2"
             role="combobox"
             aria-expanded={isOpen}
             aria-haspopup="listbox"
@@ -160,7 +160,7 @@ export default function LocationInput() {
               aria-activedescendant={
                 activeIndex >= 0 ? `suggestion-${activeIndex}` : undefined
               }
-              className="flex-1 bg-transparent text-navy placeholder-navy/30 text-base font-medium min-w-0 outline-none focus:outline-none focus:ring-0 focus:border-0 border-0"
+              className="flex-1 bg-transparent text-navy placeholder-navy/30 text-base font-medium min-w-0 outline-none focus:outline-none focus-visible:outline-none focus:ring-0 focus:ring-offset-0 focus:border-0 border-0"
               autoComplete="off"
               spellCheck="false"
             />
