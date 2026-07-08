@@ -3,15 +3,32 @@ import { createHash } from 'crypto'
 import { InMemoryCache } from '@/lib/cache'
 import type { OverpassResponse } from '@/types'
 
+// Allow room for retries across mirrors within the serverless budget.
+export const maxDuration = 60
+
 const cache = new InMemoryCache<OverpassResponse>()
 const CACHE_TTL_MS = 5 * 60 * 1000 // 5 minutes
 
-// Mirrors tried in order — first success wins
+// Mirrors tried in order — first success wins. Ordered by observed reliability;
+// the canonical overpass-api.de and osm.ch are healthiest, mail.ru is a flaky
+// last resort. (kumi.systems removed — consistently unavailable.)
 const OVERPASS_ENDPOINTS = [
-  'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
   'https://overpass-api.de/api/interpreter',
-  'https://overpass.kumi.systems/api/interpreter',
+  'https://overpass.osm.ch/api/interpreter',
+  'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
 ]
+
+// A descriptive User-Agent is required by the OSM/Overpass usage policy, and
+// some mirrors (notably overpass-api.de) reject requests without one (HTTP 406).
+const USER_AGENT = 'BridgesBarksBreweries/1.0 (+https://github.com/ dog-walk finder)'
+
+// Per-attempt timeout. Kept short so a single hanging mirror can't consume the
+// whole request budget — we'd rather move on and retry another mirror.
+const ATTEMPT_TIMEOUT_MS = 12_000
+
+// Number of full passes over the mirror list. A second pass recovers from
+// transient failures (e.g. an occasional 406/504 on an otherwise-healthy host).
+const MAX_PASSES = 2
 
 async function tryOverpass(
   endpoint: string,
@@ -28,6 +45,7 @@ async function tryOverpass(
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         Accept: 'application/json',
+        'User-Agent': USER_AGENT,
       },
       body: encodedBody,
     })
@@ -71,9 +89,13 @@ export async function POST(request: NextRequest) {
   const encoded = `data=${encodeURIComponent(query)}`
 
   let data: OverpassResponse | null = null
-  for (const endpoint of OVERPASS_ENDPOINTS) {
-    data = await tryOverpass(endpoint, encoded, 20000)
-    if (data) break
+  // Retry across the mirror list: a transient failure on one host in the first
+  // pass is often recoverable on a second pass or from another mirror.
+  outer: for (let pass = 0; pass < MAX_PASSES; pass++) {
+    for (const endpoint of OVERPASS_ENDPOINTS) {
+      data = await tryOverpass(endpoint, encoded, ATTEMPT_TIMEOUT_MS)
+      if (data) break outer
+    }
   }
 
   if (!data) {

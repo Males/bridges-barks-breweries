@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <rect width="32" height="32" rx="6" fill="#1A1344"/>
+  <!-- Bridge arch -->
+  <path d="M6 22V18c0-2 2-4 4-4h2l2-4h4l2 4h2c2 0 4 2 4 4v4" stroke="#2B4EFF" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M10 14v8M16 10v12M22 14v8" stroke="#FFE600" stroke-width="1.5" stroke-linecap="round" opacity="0.9"/>
+</svg>
