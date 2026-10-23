@@ -24,7 +24,11 @@ const USER_AGENT = 'BridgesBarksBreweries/1.0 (+https://github.com/ dog-walk fin
 
 // Per-attempt timeout. Kept short so a single hanging mirror can't consume the
 // whole request budget — we'd rather move on and retry another mirror.
-const ATTEMPT_TIMEOUT_MS = 12_000
+const ATTEMPT_TIMEOUT_MS = 25_000
+
+// Stop starting new attempts after this long so we stay inside maxDuration.
+// Some healthy mirrors (maps.mail.ru) routinely take 11-14s.
+const DEADLINE_MS = 55_000
 
 // Number of full passes over the mirror list. A second pass recovers from
 // transient failures (e.g. an occasional 406/504 on an otherwise-healthy host).
@@ -59,6 +63,13 @@ async function tryOverpass(
     // Validate it looks like an Overpass response
     if (!Array.isArray(json.elements)) return null
 
+    // A mirror with a broken database still answers 200 with valid JSON but
+    // zero elements and a non-date timestamp (e.g. overpass.osm.ch returned
+    // "117940"). Treat that as a failure so we fall through to a healthy mirror.
+    const stamp = (json as { osm3s?: { timestamp_osm_base?: string } }).osm3s
+      ?.timestamp_osm_base
+    if (!stamp || !/^\d{4}-\d{2}-\d{2}T/.test(stamp)) return null
+
     return json
   } catch {
     return null
@@ -91,9 +102,12 @@ export async function POST(request: NextRequest) {
   let data: OverpassResponse | null = null
   // Retry across the mirror list: a transient failure on one host in the first
   // pass is often recoverable on a second pass or from another mirror.
+  const startedAt = Date.now()
   outer: for (let pass = 0; pass < MAX_PASSES; pass++) {
     for (const endpoint of OVERPASS_ENDPOINTS) {
-      data = await tryOverpass(endpoint, encoded, ATTEMPT_TIMEOUT_MS)
+      const remaining = DEADLINE_MS - (Date.now() - startedAt)
+      if (remaining < 5_000) break outer
+      data = await tryOverpass(endpoint, encoded, Math.min(ATTEMPT_TIMEOUT_MS, remaining))
       if (data) break outer
     }
   }
